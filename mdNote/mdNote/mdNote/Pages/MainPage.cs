@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xamarin.Forms;
 using mdNote.Styles;
-using mdNote.Models;
+using Xamarin.Forms;
 
 namespace mdNote.Pages
 {
@@ -12,13 +11,12 @@ namespace mdNote.Pages
     {
         public static EditorPage Editor { get; set; }
         public static Controls.MenuView Menu { get; set; }
-        public SettingsPage Settings { get; set; } = null;
-
+        //TODO Check using as static
         public static NavigationPage Navigator;
+        public SettingsPage Settings { get; set; } = null;
 
         public MainPage()
         {
-
             Editor = new EditorPage();
 
             Menu = new Controls.MenuView();
@@ -29,20 +27,19 @@ namespace mdNote.Pages
             Menu.AddSeparator();
             Menu.AddMenuItem(Editor.PreviewCommand);
             Menu.AddSeparator();
-            Menu.AddMenuItem(Editor.InitViewCommand);
             Menu.AddMenuItem("Settings", null, Icons.Settings, (o) =>
-                {
-                    if (Settings == null) Settings = new SettingsPage();
-                    Detail.Navigation.PushAsync(Settings);
-                }, null);
+            {
+                if (Settings == null) Settings = new SettingsPage();
+                Detail.Navigation.PushAsync(Settings);
+            }, null);
+            Menu.OnMenuTap += (s, e) => { IsPresented = false; };
 
-            Master = new ContentPage { Content = Menu, Title = "mdNote" };
+            Master = new ContentPage { Title = "mdNote", Content = Menu };
             Navigator = new NavigationPage(Editor);
             Navigator.Pushed += (s, e) => { IsPresented = false; };
             Navigator.Popped += (s, e) => { IsPresented = false; };
             Detail = Navigator;
             MasterBehavior = MasterBehavior.Popover;
-            Menu.OnMenuTap += (s, e) => { IsPresented = false; };
         }
     }
 }

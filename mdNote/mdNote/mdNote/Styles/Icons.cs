@@ -20,6 +20,11 @@ namespace mdNote.Styles
         {
             get { return Device.OnPlatform("\uF114", "\uF114", "\uE8B7"); }
         }
+
+        public static string Location
+        {
+            get { return Device.OnPlatform("\uF097", "\uF097", "\uE249"); }
+        }
         public static string UpFolder
         {
             get { return Device.OnPlatform(null, "\uF148", "\uE8DA"); }
@@ -47,31 +52,31 @@ namespace mdNote.Styles
 
         public static string OpenFile
         {
-            get { return Device.OnPlatform(null, null, "\uE1A5"); }
+            get { return Device.OnPlatform(null, "\uF115", "\uE1A5"); }
         }
 
         public static string NewFile
         {
-            get { return Device.OnPlatform(null, null, "\uE160"); }
+            get { return Device.OnPlatform(null, "\uF016", "\uE160"); }
         }
 
         public static string File
         {
-            get { return Device.OnPlatform(null, null, "\uE160"); }
+            get { return Device.OnPlatform(null, "\uF0F6", "\uE160"); }
         }
 
         public static string SaveFile
         {
-            get { return Device.OnPlatform(null, null, "\uE105"); }
+            get { return Device.OnPlatform(null, "\uF0C7", "\uE105"); }
         }
         public static string SaveAsFile
         {
-            get { return Device.OnPlatform(null, null, "\uE28F"); }
+            get { return Device.OnPlatform(null, "\uF0C5", "\uE28F"); }
         }
         public static string Preview
         {
-            get { return Device.OnPlatform(null, null, "\uE295"); }
+            get { return Device.OnPlatform(null, "\uF096", "\uE295"); }
         }
-        public static string Edit { get { return Device.OnPlatform(null, null, "\uE104"); } }
+        public static string Edit { get { return Device.OnPlatform(null, "\uF044", "\uE104"); } }
     }
 }

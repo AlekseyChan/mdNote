@@ -19,7 +19,8 @@ namespace mdNote
 
 		public static void SetMainPage()
 		{
+//            Current.MainPage = new Pages.Page1();
             Current.MainPage = new Pages.MainPage();
         }
-	}
+    }
 }

@@ -243,7 +243,7 @@ namespace mdNote.Pages
             if (!await CheckModificationsAsync()) return;
             CurrentPath = String.Empty;
             SavedContent = newText;
-            
+
             await Navigation.PopToRootAsync();
         }
 
@@ -295,7 +295,6 @@ namespace mdNote.Pages
         public IconMenuItem SaveCommand { get; private set; }
         public IconMenuItem SaveAsCommand { get; private set; }
         public IconMenuItem OpenCommand { get; private set; }
-        public IconMenuItem InitViewCommand { get; private set; }
         public IconMenuItem PreviewCommand { get; private set; }
 
         public void InitCommands()
@@ -347,16 +346,6 @@ namespace mdNote.Pages
                     SyncPreviewMenu();
                 }
             };
-            InitViewCommand = new IconMenuItem()
-            {
-                Kind = IconMenuItemKind.Command,
-                Text = "Init view",
-                Icon = Styles.Icons.Preview,
-                Command = (o) =>
-                {
-                    MainPage.Menu.Refresh();
-                }
-            };
         }
         #endregion
 
@@ -375,6 +364,12 @@ namespace mdNote.Pages
             savedContent = DefaultContent;
             Content = webView;
             Title = "untitled.md";
+            this.Focused += EditorPage_Focused;
+        }
+
+        private void EditorPage_Focused(object sender, FocusEventArgs e)
+        {
+            webView.Focus();
         }
 
         protected override void OnAppearing()
@@ -383,6 +378,7 @@ namespace mdNote.Pages
             if (!webView.Source.Equals(htmlSource))
                 RefreshWebView();
             MainPage.Menu.Refresh();
+            webView.Focus();
         }
 
         protected override void OnDisappearing()
