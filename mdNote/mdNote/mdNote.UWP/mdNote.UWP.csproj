@@ -100,13 +100,19 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvWebViewRender.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BaseUrl.cs" />
+    <Compile Include="FileSystem.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShareTargetPage.xaml.cs">
+      <DependentUpon>ShareTargetPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -114,8 +120,13 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="github.min.css" />
+    <Content Include="highlight.min.js" />
+    <Content Include="jquery.min.js" />
     <Content Include="profile_generic.png" />
     <Content Include="Properties\Default.rd.xml" />
+    <Content Include="simplemde.min.css" />
+    <Content Include="simplemde.min.js" />
     <Content Include="slideout.png" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +137,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ShareTargetPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

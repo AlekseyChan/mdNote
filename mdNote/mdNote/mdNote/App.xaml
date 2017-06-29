@@ -1,7 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="mdNote.App">
+<Application xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mdNote.App"
+              xmlns:ctrl="clr-namespace:mdNote.Controls" 
+             >
   <Application.Resources>
         <ResourceDictionary>
+            <Color x:Key="BarBackground">#004f88</Color>
+            <Color x:Key="BarText">#FAFAFA</Color>
+
             <Color x:Key="Primary">#2196F3</Color>
             <Color x:Key="PrimaryDark">#1976D2</Color>
             <Color x:Key="Accent">#96d1ff</Color>
@@ -11,9 +17,14 @@
             <Color x:Key="LightTextColor">#999999</Color>
 
             <Style TargetType="NavigationPage">
-                <Setter Property="BarBackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="BarTextColor" Value="White" />
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource BarBackground}" />
+                <Setter Property="BarTextColor" Value="{DynamicResource BarText}" />
             </Style>
+
+            <Style TargetType="ctrl:MenuView">
+                <Setter Property="BackgroundColor" Value="{DynamicResource BarBackground}" />
+            </Style>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

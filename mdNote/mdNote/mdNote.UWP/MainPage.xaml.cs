@@ -23,5 +23,6 @@ namespace mdNote.UWP
 
             LoadApplication(new mdNote.App());
         }
+
     }
 }

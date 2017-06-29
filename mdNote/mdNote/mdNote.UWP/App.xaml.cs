@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -20,7 +21,7 @@ namespace mdNote.UWP
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    partial class App : Application
     {
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -32,12 +33,13 @@ namespace mdNote.UWP
             this.Suspending += OnSuspending;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected void OpenFile(string fileName)
+        {
+            if (String.IsNullOrEmpty(fileName)) return;
+            Pages.MainPage.Editor.OpenFileAsync(fileName.Replace("\"", ""));
+        }
+
+        protected void ActivationSequence(IActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -51,6 +53,9 @@ namespace mdNote.UWP
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 Xamarin.Forms.Forms.Init(e);
+
+                Xamarin.Forms.DependencyService.Register<BaseUrl>();
+                Xamarin.Forms.DependencyService.Register<FileSystem>();
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -66,12 +71,77 @@ namespace mdNote.UWP
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(MainPage), e);
             }
             // Ensure the current window is active
             Window.Current.Activate();
         }
 
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="e">Details about the launch request and process.</param>
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        {
+            ActivationSequence(e);
+            if (!String.IsNullOrEmpty(e.Arguments))
+                OpenFile(e.Arguments);
+        }
+
+        protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
+        {
+            if (args.Kind == ActivationKind.ShareTarget)
+            {
+                args.ShareOperation.ReportStarted();
+                string Text = String.Empty;
+
+                if (args.ShareOperation.Data.Contains(StandardDataFormats.WebLink))
+                    Text = (await args.ShareOperation.Data.GetWebLinkAsync()).ToString();
+                if (args.ShareOperation.Data.Contains(StandardDataFormats.Text))
+                    Text = (await args.ShareOperation.Data.GetTextAsync()).ToString();
+                if (args.ShareOperation.Data.Contains(StandardDataFormats.Html))
+                    Text = (await args.ShareOperation.Data.GetHtmlFormatAsync()).ToString();
+
+                if (Pages.MainPage.Editor == null)
+                {
+
+                    Xamarin.Forms.Forms.Init(args);
+
+                    Xamarin.Forms.DependencyService.Register<BaseUrl>();
+                    Xamarin.Forms.DependencyService.Register<FileSystem>();
+
+                    var rootFrame = new Frame();
+                    Pages.EditorPage.DefaultContent = Text;
+                    rootFrame.Navigate(typeof(MainPage));
+                    Window.Current.Content = rootFrame;
+                    Window.Current.Activate();
+                }
+                else
+                {
+                    Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
+                    {
+                        Pages.MainPage.Editor.SetTextAsync(Text);
+                    });
+                    args.ShareOperation.ReportCompleted();
+                }
+
+
+            }
+        }
+
+        protected override void OnFileActivated(FileActivatedEventArgs args)
+        {
+            base.OnFileActivated(args);
+
+            if (Window.Current.Content == null)
+                ActivationSequence(args);
+
+            foreach (Windows.Storage.IStorageItem file in args.Files)
+            {
+                OpenFile(file.Path);
+            }
+        }
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>

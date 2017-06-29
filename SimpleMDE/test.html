@@ -1,0 +1,23 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="dist/simplemde.min.css">
+	<script src="dist/simplemde.min.js"></script>
+</head>
+
+<body>
+	<textarea id="demo1"></textarea>
+	<button onclick="javascript:alert(simplemde.value());">test</button>
+<script>
+	var simplemde=new SimpleMDE({
+		autoDownloadFontAwesome:true,
+	autofocus: true,
+	element: document.getElementById("demo1"),
+	lineWrapping: true,
+	promptURLs: true,
+	spellChecker: true,
+});
+</script>
+</body>
+
+</html>
