@@ -111,6 +111,7 @@ namespace mdNote.Droid
             throw new NotImplementedException();
         }
 
+
         public async Task WriteFileAsync(string fileName, string content)
         {
             System.IO.File.WriteAllText(fileName, content, Encoding.UTF8);
