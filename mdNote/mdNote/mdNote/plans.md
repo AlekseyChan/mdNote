@@ -184,4 +184,6 @@ sealed partial class App : Application
 
         }
 
-    }
+
+
+http://thatcsharpguy.com/post/opening-files-xamarin-forms/    }

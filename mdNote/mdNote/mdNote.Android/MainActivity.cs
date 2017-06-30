@@ -8,21 +8,9 @@ namespace mdNote.Droid
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "text/plain")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
-            base.OnRequestPermissionsResult(requestCode, permissions);
-        }
-
-        public void CheckPermissions()
-        {
-            if ((int)Build.VERSION.SdkInt < 23) return;
-
-
-            //if (ApplicationContext.CheckCallingPermission(Android.Manifest.Permission.ReadExternalStorage) != Permission.Granted)
-                RequestPermissions(new string[] { Android.Manifest.Permission.ReadExternalStorage }, 25);
-
-            //if (ApplicationContext.CheckCallingPermission(Android.Manifest.Permission.WriteExternalStorage) != Permission.Granted)
-                RequestPermissions(new string[] { Android.Manifest.Permission.WriteExternalStorage }, 25);
+            Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
         protected override void OnCreate(Bundle bundle)
@@ -38,8 +26,45 @@ namespace mdNote.Droid
             {
                 mdNote.Pages.EditorPage.DefaultContent = Intent.GetStringExtra(Android.Content.Intent.ExtraText);
             }
-            CheckPermissions();
+//            CheckPermissions();
             LoadApplication(new App());
+            TestWrite();
         }
+
+        private void TestWrite()
+        {
+            var sdCard = "/storage/0123-4567/Downloads";
+            var filePath = System.IO.Path.Combine(sdCard, "test.txt");
+            using (System.IO.StreamWriter writer = System.IO.File.CreateText(filePath))
+            {
+                writer.Write("test");
+            }
+        }
+
+/*        public void TestWrite2(
+            DocumentFile pickedDir)
+        {
+            Android.Provider.DocumentsProvider p = new Android.Provider.DocumentsProvider();
+            try
+            {
+                DocumentFile file = pickedDir.createFile("image/jpeg", "try2.jpg");
+                OutputStream out = getContentResolver().openOutputStream(file.getUri());
+                try
+                {
+
+                    // write the image content
+
+                }
+                finally
+                {
+            out.close();
+                }
+
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Something went wrong : " + e.getMessage(), e);
+            }
+        }*/
     }
 }

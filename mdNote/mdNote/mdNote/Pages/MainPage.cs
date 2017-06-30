@@ -32,6 +32,13 @@ namespace mdNote.Pages
                 if (Settings == null) Settings = new SettingsPage();
                 Detail.Navigation.PushAsync(Settings);
             }, null);
+            Menu.AddMenuItem("Permissions", null, Icons.Settings, async (o) =>
+            {
+                /*var status = await Plugin.Permissions.CrossPermissions.Current.CheckPermissionStatusAsync(Plugin.Permissions.Abstractions.Permission.Storage);
+                if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)*/
+                    var status = (await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(Plugin.Permissions.Abstractions.Permission.Storage))[Plugin.Permissions.Abstractions.Permission.Storage];
+                await DisplayAlert("Results", status.ToString(), "OK");
+            }, null);
             Menu.OnMenuTap += (s, e) => { IsPresented = false; };
 
             Master = new ContentPage { Title = "mdNote", Content = Menu };
