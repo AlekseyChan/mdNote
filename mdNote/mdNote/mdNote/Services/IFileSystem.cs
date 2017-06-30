@@ -9,10 +9,7 @@ namespace mdNote.Services
         Task<string> ReadFileAsync(string fileName);
         Task WriteFileAsync(string fileName, string content);
         Task ScanLocationAsync(string parentPath, bool recursive, Action<mdNote.Models.File> callbackFunction);
-        Task<string> SelectFolderAsync();
+        Task SelectFolderAsync();
         Task<Models.File> GetLocationInfoAsync(string path);
-        /*        Task<string> SelectFolderAsync();
-                Task ScanLocationAsync(string parentPath, bool recursive, Action<File> callbackFunction);
-                Task<Stream> GetStreamForFileAsync(string path);*/
     }
 }

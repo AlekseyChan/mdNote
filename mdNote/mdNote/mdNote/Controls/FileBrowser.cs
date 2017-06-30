@@ -9,7 +9,7 @@ namespace mdNote.Controls
 {
     public delegate void FileTapEventHandler(object sender, Models.File file, EventArgs e);
 
-    public class FileBrowser : ListView
+    public class FileBrowser : ListView, IDisposable
     {
         public event FileTapEventHandler OnTextTap;
         public event FileTapEventHandler OnUnknownTap;
@@ -17,7 +17,8 @@ namespace mdNote.Controls
         public Boolean AllowNewFavorities { get; set; }
 
         private bool isPathWritable = false;
-        public bool IsPathWritable {
+        public bool IsPathWritable
+        {
             get => isPathWritable;
             set
             {
@@ -55,6 +56,19 @@ namespace mdNote.Controls
             templateSelector.OnUnknownClick += OnUnknownClick;
             ItemTemplate = templateSelector;
 
+            Services.DeviceServices.OnAddLocation += DeviceServices_OnAddLocation;
+        }
+
+        public void Dispose()
+        {
+            Services.DeviceServices.OnAddLocation -= DeviceServices_OnAddLocation;
+        }
+
+        private void DeviceServices_OnAddLocation(string newFolder)
+        {
+            if (string.IsNullOrEmpty(newFolder)) return;
+            Settings.LibraryFolders = newFolder + ";" + Settings.LibraryFolders;
+            ScanFolderAsync();
         }
 
         private void OnRemoveLocationClick(object sender, EventArgs e)
@@ -65,9 +79,6 @@ namespace mdNote.Controls
 
         protected Stack<string> history { get; private set; } = new Stack<string>();
 
-        //TODO refactor to singleton
-        private Services.IFileSystem fileSystem = DependencyService.Get<mdNote.Services.IFileSystem>();
-
         public async void ScanFolderAsync()
         {
             BeginRefresh();
@@ -76,16 +87,13 @@ namespace mdNote.Controls
             {
                 if (IsInRoot)
                 {
-                    if (Xamarin.Forms.Device.OS == TargetPlatform.Windows)
-                    {
-                        catalog.Add(Models.File.AddLocation);
-                    }
+                    catalog.Add(Models.File.AddLocation);
                     //TODO Это избранное, но добавить его можно только в Windows...надо придумать что-то получше
                     string[] folders = Settings.LibraryFolders.Split(';');
                     foreach (string folder in folders)
                     {
                         if (String.IsNullOrWhiteSpace(folder)) continue;
-                        catalog.Add(await fileSystem.GetLocationInfoAsync(folder));
+                        catalog.Add(await Services.DeviceServices.FileSystem.GetLocationInfoAsync(folder));
                     }
                 }
                 else
@@ -93,8 +101,8 @@ namespace mdNote.Controls
                     catalog.Add(Models.File.ParentFolder);
                 }
 
-                if ((Xamarin.Forms.Device.OS != TargetPlatform.Windows) || (!string.IsNullOrEmpty(CurrentPath)))
-                    await fileSystem.ScanLocationAsync(CurrentPath, false, (Models.File file) =>
+                if (!string.IsNullOrEmpty(CurrentPath))
+                    await Services.DeviceServices.FileSystem.ScanLocationAsync(CurrentPath, false, (Models.File file) =>
                         {
                             catalog.Add(file);
                         });
@@ -124,14 +132,6 @@ namespace mdNote.Controls
             OnTextTap?.Invoke(sender, file, e);
         }
 
-        public async void AddLocationAsync()
-        {
-            string newFolder = await fileSystem.SelectFolderAsync();
-            if (string.IsNullOrEmpty(newFolder)) return;
-            Settings.LibraryFolders = newFolder + ";" + Settings.LibraryFolders;
-            ScanFolderAsync();
-        }
-
         private void OnServiceClick(object sender, EventArgs e)
         {
             Models.File file = getFileFromViewCell(sender);
@@ -145,7 +145,7 @@ namespace mdNote.Controls
             }
             if (file.Path.Equals("+"))
             {
-                AddLocationAsync();
+                Services.DeviceServices.AddLocation();
             }
         }
 

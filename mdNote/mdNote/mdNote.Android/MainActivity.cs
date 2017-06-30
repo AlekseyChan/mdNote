@@ -1,6 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Android.Content;
+using System.Threading.Tasks;
 
 namespace mdNote.Droid
 {
@@ -8,9 +10,22 @@ namespace mdNote.Droid
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "text/plain")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        public const int REQUEST_CODE_OPEN_DIRECTORY = 1;
+        public async Task SelectFolderAsync()
         {
-            Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            var intent = new Intent(Intent.ActionOpenDocumentTree);
+            StartActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == REQUEST_CODE_OPEN_DIRECTORY && resultCode == Result.Ok)
+            {
+                var folder = System.Net.WebUtility.UrlDecode(data.DataString);
+
+                mdNote.Services.DeviceServices.LocationAdded(folder);
+            }
         }
 
         protected override void OnCreate(Bundle bundle)
@@ -26,9 +41,7 @@ namespace mdNote.Droid
             {
                 mdNote.Pages.EditorPage.DefaultContent = Intent.GetStringExtra(Android.Content.Intent.ExtraText);
             }
-//            CheckPermissions();
             LoadApplication(new App());
-            TestWrite();
         }
 
         private void TestWrite()
@@ -41,30 +54,5 @@ namespace mdNote.Droid
             }
         }
 
-/*        public void TestWrite2(
-            DocumentFile pickedDir)
-        {
-            Android.Provider.DocumentsProvider p = new Android.Provider.DocumentsProvider();
-            try
-            {
-                DocumentFile file = pickedDir.createFile("image/jpeg", "try2.jpg");
-                OutputStream out = getContentResolver().openOutputStream(file.getUri());
-                try
-                {
-
-                    // write the image content
-
-                }
-                finally
-                {
-            out.close();
-                }
-
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException("Something went wrong : " + e.getMessage(), e);
-            }
-        }*/
     }
 }

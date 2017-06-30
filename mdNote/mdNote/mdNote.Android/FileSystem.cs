@@ -13,6 +13,7 @@ using Android.Views;
 using Android.Widget;
 using mdNote.Models;
 using System.Threading.Tasks;
+using Plugin.CurrentActivity;
 
 [assembly: Dependency(typeof(mdNote.Droid.FileSystem))]
 namespace mdNote.Droid
@@ -106,11 +107,11 @@ namespace mdNote.Droid
 
         }
 
-        public Task<string> SelectFolderAsync()
+        public async Task SelectFolderAsync()
         {
-            throw new NotImplementedException();
+            await ((MainActivity)CrossCurrentActivity.Current.Activity).SelectFolderAsync();
+            
         }
-
 
         public async Task WriteFileAsync(string fileName, string content)
         {
