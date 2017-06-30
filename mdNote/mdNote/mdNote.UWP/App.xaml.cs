@@ -33,10 +33,17 @@ namespace mdNote.UWP
             this.Suspending += OnSuspending;
         }
 
-        protected void OpenFile(string fileName)
+        private async void OpenFile(Windows.Storage.StorageFile file)
+        {
+            mdNote.Pages.MainPage.Editor.SavedContent = await Windows.Storage.FileIO.ReadTextAsync(file, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+            mdNote.Pages.MainPage.Editor.CurrentPath = file.Path;
+            ((FileSystem)mdNote.Services.DeviceServices.FileSystem).CurrentFile = file;
+        }
+
+        protected async void OpenFile(string fileName)
         {
             if (String.IsNullOrEmpty(fileName)) return;
-            Pages.MainPage.Editor.OpenFileAsync(fileName.Replace("\"", ""));
+            OpenFile(await Windows.Storage.StorageFile.GetFileFromPathAsync(fileName.Replace("\"", "")));
         }
 
         protected void ActivationSequence(IActivatedEventArgs e)
@@ -100,8 +107,8 @@ namespace mdNote.UWP
                     Text = (await args.ShareOperation.Data.GetWebLinkAsync()).ToString();
                 if (args.ShareOperation.Data.Contains(StandardDataFormats.Text))
                     Text = (await args.ShareOperation.Data.GetTextAsync()).ToString();
-                if (args.ShareOperation.Data.Contains(StandardDataFormats.Html))
-                    Text = (await args.ShareOperation.Data.GetHtmlFormatAsync()).ToString();
+                /*if (args.ShareOperation.Data.Contains(StandardDataFormats.Html))
+                    Text = (await args.ShareOperation.Data.GetHtmlFormatAsync()).ToString();*/
 
                 if (Pages.MainPage.Editor == null)
                 {
@@ -139,7 +146,7 @@ namespace mdNote.UWP
 
             foreach (Windows.Storage.IStorageItem file in args.Files)
             {
-                OpenFile(file.Path);
+                OpenFile(file as Windows.Storage.StorageFile);
             }
         }
         /// <summary>

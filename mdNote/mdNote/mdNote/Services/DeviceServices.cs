@@ -5,22 +5,29 @@ using Xamarin.Forms;
 
 namespace mdNote.Services
 {
-    public delegate void AddLocationEventHandler(string newFolder);
-
     public class DeviceServices
     {
-        public static event AddLocationEventHandler OnAddLocation;
+        public static void NewFile()
+        {
+            FileSystem.NewFile();
+        }
+
+        public static void OpenFile()
+        {
+            FileSystem.OpenFile();
+        }
+
+        public static void SaveFile()
+        {
+            FileSystem.SaveFile();
+        }
+
+        public static void SaveFileAs()
+        {
+            FileSystem.SaveFileAs();
+        }
+
         public static IFileSystem FileSystem = DependencyService.Get<IFileSystem>();
         public static string BaseUrl = DependencyService.Get<IBaseUrl>().Get();
-
-        public static void AddLocation()
-        {
-            FileSystem.SelectFolderAsync();
-        }
-
-        public static void LocationAdded(string newFolder)
-        {
-            OnAddLocation?.Invoke(newFolder);
-        }
     }
 }

@@ -26,11 +26,11 @@ namespace mdNote.Controls
                 command.SetBinding(IconButton.IconProperty, "Icon");
                 command.SetBinding(IconButton.IsVisibleProperty, "IsEnabled");
 
-                command.TextColor = Styles.Styles.MenuTextColor;
-                command.FontSize = 15;
-                command.IconGap = 27;
+                command.TextColor = Styles.Menu.TextColor;
+                command.FontSize = Styles.Menu.FontSize;
+                command.IconGap = Styles.Menu.IconGap;
                 command.FixedIconGap = false;
-                command.Padding = new Thickness(16, 14);
+                command.Padding = Styles.Menu.ButtonPadding;
                 return new ViewCell { View = command };
             });
             SeparatorTemplate = new DataTemplate(() =>
@@ -39,9 +39,9 @@ namespace mdNote.Controls
                 {
                     View = new BoxView
                     {
-                        HeightRequest = 1,
-                        BackgroundColor = Styles.Styles.MenuSeparatorColor,
-                        Margin = new Thickness(5, 0, 5, 0)
+                        HeightRequest = Styles.Menu.SeparatorHeight,
+                        BackgroundColor = Styles.Menu.SeparatorColor,
+                        Margin = Styles.Menu.SeparatorMargin
                     }
                 };
             });
@@ -53,15 +53,17 @@ namespace mdNote.Controls
                 };
                 Label caption = new Label
                 {
-                    FontSize = 15,
-                    Margin = new Thickness(5, 10, 5, 0)
+                    FontSize = Styles.Menu.CaptionFontSize,
+                    Margin = Styles.Menu.CaptionMargin,
+                    TextColor = Styles.Menu.CaptionColor
                 };
                 caption.SetBinding(Label.TextProperty, "Text");
+
                 BoxView line = new BoxView
                 {
-                    HeightRequest = 1,
-                    BackgroundColor = Color.Black,
-                    Margin = new Thickness(5, 0, 5, 0)
+                    HeightRequest = Styles.Menu.SeparatorHeight,
+                    BackgroundColor = Styles.Menu.SeparatorColor,
+                    Margin = Styles.Menu.SeparatorMargin
                 };
                 separator.Children.Add(caption);
                 separator.Children.Add(line);

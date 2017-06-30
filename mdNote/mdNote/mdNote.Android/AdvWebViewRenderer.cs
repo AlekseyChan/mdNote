@@ -48,8 +48,10 @@ namespace mdNote.Droid
         private Action<string> _callback;
         public void OnReceiveValue(Java.Lang.Object value)
         {
-            string result = Convert.ToString(value);
-            if (result.Length >= 2)
+            Java.Lang.String strValue = (Java.Lang.String)value;
+            string result = new System.String(strValue.ToCharArray());
+            result = System.Text.RegularExpressions.Regex.Unescape(result);
+            if (result.Length > 2)
                 result = result.Substring(1, result.Length - 2);
             _callback?.Invoke(result);
         }

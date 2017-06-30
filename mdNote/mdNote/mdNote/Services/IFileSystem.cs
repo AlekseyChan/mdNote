@@ -6,10 +6,9 @@ namespace mdNote.Services
 {
     public interface IFileSystem
     {
-        Task<string> ReadFileAsync(string fileName);
-        Task WriteFileAsync(string fileName, string content);
-        Task ScanLocationAsync(string parentPath, bool recursive, Action<mdNote.Models.File> callbackFunction);
-        Task SelectFolderAsync();
-        Task<Models.File> GetLocationInfoAsync(string path);
+        void OpenFile();
+        void SaveFile();
+        void SaveFileAs();
+        void NewFile();
     }
 }

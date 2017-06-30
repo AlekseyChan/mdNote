@@ -46,10 +46,12 @@ namespace mdNote.Pages
             return @"
 <style>
     body {
-        font-size: 12pt;
-        font-family: 'Proxima Nova','Arial','Helvetica Neue',sans-serif;
+        font-size: " + Styles.Editor.FontSize + @";
+        font-family: " + Styles.Editor.FontFamily + @";
         padding: 0;
         margin: 0;
+        background-color: " + Styles.Editor.TextColor + @";
+        color: " + Styles.Editor.BackgroundColor + @";
     }
 
     textarea {
@@ -60,24 +62,39 @@ namespace mdNote.Pages
     }
 
     h1 {
-        font-size: 16pt;
+        font-size: " + Styles.Editor.H1Size + @";
         font-weight: bold;
+    }
+    .CodeMirror .CodeMirror-code .cm-header-1 {
+        font-size: " + Styles.Editor.H1Size + @";
     }
     h2 {
-        font-size: 14pt;
+        font-size: " + Styles.Editor.H2Size + @";
         font-weight: bold;
+    }
+    .CodeMirror .CodeMirror-code .cm-header-2 {
+        font-size: " + Styles.Editor.H2Size + @";
     }
     h3 {
-        font-size: 12pt;
+        font-size: " + Styles.Editor.H3Size + @";
         font-weight: bold;
+    }
+    .CodeMirror .CodeMirror-code .cm-header-3 {
+        font-size: " + Styles.Editor.H3Size + @";
     }
     h4 {
-        font-size: 10pt;
+        font-size: " + Styles.Editor.H4Size + @";
         font-weight: bold;
     }
+    .CodeMirror .CodeMirror-code .cm-header-4 {
+        font-size: " + Styles.Editor.H4Size + @";
+    }
     h5 {
-        font-size: 8pt;
+        font-size: " + Styles.Editor.H5Size + @";
         font-weight: bold;
+    }
+    .CodeMirror .CodeMirror-code .cm-header-5 {
+        font-size: " + Styles.Editor.H5Size + @";
     }
 </style>";
         }
@@ -95,7 +112,7 @@ namespace mdNote.Pages
             "initialValue:" + ConvertedContent + ",";
         }
 
-        private string generateHtml()
+        public string generateHtml()
         {
             string basicHtml = @"
 <html>
@@ -166,7 +183,8 @@ namespace mdNote.Pages
 
         public string ConvertedContent
         {
-            get => "htmlDecode('" + System.Net.WebUtility.HtmlEncode(System.Text.RegularExpressions.Regex.Escape(savedContent)) + "')";
+            get => String.IsNullOrEmpty(savedContent) ? "''" :
+                "htmlDecode('" + System.Net.WebUtility.HtmlEncode(System.Text.RegularExpressions.Regex.Escape(savedContent)) + "')";
         }
 
         private bool isPreview = false;
@@ -180,7 +198,7 @@ namespace mdNote.Pages
             }
         }
 
-        private async Task<string> GetCurrentContentAsync()
+        public async Task<string> GetCurrentContentAsync()
         {
             return await webView.TryEval("simplemde.value();");
         }
@@ -190,37 +208,14 @@ namespace mdNote.Pages
             return SavedContent.Equals(await GetCurrentContentAsync());
         }
 
+        public void SaveContent(string newContent)
+        {
+            savedContent = newContent;
+        }
+
         #endregion
 
         #region file operations
-        private FileOpenPage openDialog;
-        public FileOpenPage OpenDialog
-        {
-            get
-            {
-                if (openDialog == null)
-                {
-                    openDialog = new FileOpenPage();
-                    openDialog.OnSelectFile = (path) => { OpenFileAsync(path); };
-                }
-                return openDialog;
-            }
-        }
-
-        private FileSavePage saveDialog;
-        public FileSavePage SaveDialog
-        {
-            get
-            {
-                if (saveDialog == null)
-                {
-                    saveDialog = new FileSavePage();
-                    saveDialog.OnSelectFile = (path) => { SaveFileAsAsync(path); };
-                }
-                return saveDialog;
-            }
-        }
-
         public async Task<bool> CheckModificationsAsync()
         {
             //TODO Здесь надо проеврять, быи ли изменения и предлагать их сохранять
@@ -249,30 +244,6 @@ namespace mdNote.Pages
 
         public static string DefaultContent = string.Empty;
 
-        public async Task OpenFileAsync(string path)
-        {
-            if (!await CheckModificationsAsync()) return;
-            CurrentPath = path;
-            SavedContent = await DeviceServices.FileSystem.ReadFileAsync(path);
-            await Navigation.PopToRootAsync();
-        }
-
-        public async void SaveFileAsync()
-        {
-            if (String.IsNullOrEmpty(CurrentPath))
-                await Navigation.PushAsync(SaveDialog, true);
-            else
-                await SaveFileAsAsync(CurrentPath);
-        }
-
-        public async Task SaveFileAsAsync(string path)
-        {
-            string newContent = await GetCurrentContentAsync();
-            await DeviceServices.FileSystem.WriteFileAsync(path, newContent);
-            savedContent = newContent;
-            CurrentPath = path;
-            await Navigation.PopToRootAsync();
-        }
         #endregion
 
         #region Commands
@@ -304,7 +275,10 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "New",
                 Icon = Styles.Icons.File,
-                Command = (o) => { NewFileAsync(); }
+                Command = (o) =>
+                {
+                    DeviceServices.NewFile();
+                }
             };
 
             OpenCommand = new IconMenuItem()
@@ -312,7 +286,10 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "Open...",
                 Icon = Styles.Icons.OpenFile,
-                Command = (o) => { Navigation.PushAsync(OpenDialog, true); }
+                Command = (o) =>
+                {
+                    DeviceServices.OpenFile();
+                }
             };
 
             SaveCommand = new IconMenuItem()
@@ -320,7 +297,10 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "Save",
                 Icon = Styles.Icons.SaveFile,
-                Command = (o) => { SaveFileAsync(); }
+                Command = (o) =>
+                {
+                    DeviceServices.SaveFile();
+                }
             };
 
             SaveAsCommand = new IconMenuItem()
@@ -328,7 +308,7 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "Save as...",
                 Icon = Styles.Icons.SaveAsFile,
-                Command = (o) => { Navigation.PushAsync(SaveDialog, true); }
+                Command = (o) => { DeviceServices.SaveFileAs(); }
             };
 
             PreviewCommand = new IconMenuItem()

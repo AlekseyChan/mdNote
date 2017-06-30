@@ -11,7 +11,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using mdNote.Models;
 using System.Threading.Tasks;
 using Plugin.CurrentActivity;
 
@@ -20,102 +19,24 @@ namespace mdNote.Droid
 {
     public class FileSystem : IFileSystem
     {
-        private static readonly string rootDir = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath);
-
-        public async Task<Models.File> GetLocationInfoAsync(string path)
+        public void NewFile()
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(path);
-            return new Models.File
-            {
-                FileKind = FileKindEnum.Location,
-                DisplayName = dirInfo.Name,
-                Icon = Styles.Icons.Folder,
-                Description = dirInfo.FullName,
-                Path = dirInfo.FullName
-            };
+            ((MainActivity)CrossCurrentActivity.Current.Activity).NewFile();
         }
 
-        public async Task<string> ReadFileAsync(string fileName)
+        public void OpenFile()
         {
-            return System.IO.File.ReadAllText(fileName, Encoding.UTF8);
+            ((MainActivity)CrossCurrentActivity.Current.Activity).OpenFile();
         }
 
-        private async Task scanDirectory(DirectoryInfo dir, bool recursive, Action<Models.File> callbackFunction)
+        public void SaveFile()
         {
-            IEnumerable<DirectoryInfo> childDirs = dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly);
-            foreach (DirectoryInfo childDir in childDirs)
-            {
-                callbackFunction(new Models.File
-                {
-                    DisplayName = childDir.Name,
-                    Description = childDir.FullName,
-                    Path = childDir.FullName,
-                    Icon = mdNote.Styles.Icons.Folder,
-                    FileKind = FileKindEnum.Folder
-                });
-                if (recursive)
-                    scanDirectory(childDir, true, callbackFunction);
-            }
-
-            IEnumerable<FileInfo> files = dir.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
-            foreach (FileInfo file in files)
-            {
-                callbackFunction(new Models.File
-                {
-                    DisplayName = file.Name,
-                    Path = file.FullName,
-                    Icon = Styles.Icons.File,
-                    FileKind = FileKindEnum.Text
-                });
-            }
-
+            ((MainActivity)CrossCurrentActivity.Current.Activity).SaveFile();
         }
 
-        public async Task ScanLocationAsync(string parentPath, bool recursive, Action<Models.File> callbackFunction)
+        public void SaveFileAs()
         {
-            if (string.IsNullOrEmpty(parentPath))
-            {
-                Java.IO.File[] externalFilesDirs = Android.App.Application.Context.GetExternalFilesDirs(null);
-                for (var i = 0; i < externalFilesDirs.Count(); i++)
-                {
-                    Java.IO.File dir = externalFilesDirs[i];
-                    string fullInternalPath = dir.AbsolutePath; // the INTERNAL disk. This is writeable.
-                    string internalPathRoot = fullInternalPath.Substring(0, fullInternalPath.IndexOf("Android") - 1);
-                    DirectoryInfo rootDir = new DirectoryInfo(internalPathRoot);
-                    Models.File file = new Models.File
-                    {
-                        DisplayName = rootDir.Name,
-                        Description = string.IsNullOrEmpty(parentPath) ? rootDir.FullName : null,
-                        Path = rootDir.FullName,
-                        Icon = mdNote.Styles.Icons.Folder,
-                        FileKind = FileKindEnum.Folder
-                    };
-                    if (i == 0)
-                        file.DisplayName = "Device";
-                    else
-                        file.DisplayName = "sdcard" + (i - 1).ToString();
-                    callbackFunction(file);
-                    if (recursive)
-                        await scanDirectory(rootDir, recursive, callbackFunction);
-                }
-            }
-            else
-            {
-                DirectoryInfo currentDir = new DirectoryInfo(parentPath);
-                await scanDirectory(currentDir, recursive, callbackFunction);
-            }
-
-        }
-
-        public async Task SelectFolderAsync()
-        {
-            await ((MainActivity)CrossCurrentActivity.Current.Activity).SelectFolderAsync();
-            
-        }
-
-        public async Task WriteFileAsync(string fileName, string content)
-        {
-            System.IO.File.WriteAllText(fileName, content, Encoding.UTF8);
+            ((MainActivity)CrossCurrentActivity.Current.Activity).SaveFileAs();
         }
     }
 }

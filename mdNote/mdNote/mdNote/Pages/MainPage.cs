@@ -20,6 +20,7 @@ namespace mdNote.Pages
             Editor = new EditorPage();
 
             Menu = new Controls.MenuView();
+            Menu.AddViewToFixedHeader(new Controls.AppTitleView());
             Menu.AddMenuItem(Editor.NewCommand);
             Menu.AddMenuItem(Editor.OpenCommand);
             Menu.AddMenuItem(Editor.SaveCommand);
@@ -31,13 +32,6 @@ namespace mdNote.Pages
             {
                 if (Settings == null) Settings = new SettingsPage();
                 Detail.Navigation.PushAsync(Settings);
-            }, null);
-            Menu.AddMenuItem("Permissions", null, Icons.Settings, async (o) =>
-            {
-                /*var status = await Plugin.Permissions.CrossPermissions.Current.CheckPermissionStatusAsync(Plugin.Permissions.Abstractions.Permission.Storage);
-                if (status != Plugin.Permissions.Abstractions.PermissionStatus.Granted)*/
-                    var status = (await Plugin.Permissions.CrossPermissions.Current.RequestPermissionsAsync(Plugin.Permissions.Abstractions.Permission.Storage))[Plugin.Permissions.Abstractions.Permission.Storage];
-                await DisplayAlert("Results", status.ToString(), "OK");
             }, null);
             Menu.OnMenuTap += (s, e) => { IsPresented = false; };
 

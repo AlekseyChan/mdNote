@@ -16,18 +16,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\FileBrowser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\FileButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\FileTemplateSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AppTitleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MenuView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\FileSavePage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\DeviceServices.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Styles\Styles.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Styles\AppTitle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Styles\Controls.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Styles\Editor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Styles\Menu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\EditorPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\FileOpenPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IBaseUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IFileSystem.cs" />
@@ -40,7 +38,6 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Helpers\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Styles\" />
     <Folder Include="$(MSBuildThisFileDirectory)UI\" />
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
   </ItemGroup>

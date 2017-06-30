@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mdNote.Models;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(mdNote.UWP.FileSystem))]
@@ -11,89 +10,72 @@ namespace mdNote.UWP
 {
     public class FileSystem : mdNote.Services.IFileSystem
     {
-        public async Task<string> ReadFileAsync(string fileName)
+        public Windows.Storage.StorageFile CurrentFile { get; set; } = null;
+
+        public async void OpenFile()
         {
-            var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(fileName);
-            return await Windows.Storage.FileIO.ReadTextAsync(file, Windows.Storage.Streams.UnicodeEncoding.Utf8);
-        }
+            Windows.Storage.Pickers.FileOpenPicker picker = new Windows.Storage.Pickers.FileOpenPicker();
 
-        public async Task<Models.File> GetLocationInfoAsync(string path)
-        {
-            var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(path);
-            return new Models.File()
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            picker.FileTypeFilter.Add("*");
+            picker.FileTypeFilter.Add(".txt");
+            picker.FileTypeFilter.Add(".md");
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+            if (file!=null)
             {
-                FileKind = FileKindEnum.Location,
-                DisplayName = folder.DisplayName,
-                Icon = Styles.Icons.Folder,
-                Description = folder.Path,
-                Path = folder.Path
-            };
-        }
-
-        public async Task<string> SelectFolderAsync()
-        {
-            Windows.Storage.Pickers.FolderPicker folderPicker = new Windows.Storage.Pickers.FolderPicker();
-
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
-                return folder.Path;
-            }
-            return null;
-        }
-
-        public async Task ScanLocationAsync(string parentPath, bool recursive, Action<File> callbackFunction)
-        {
-            Windows.Storage.StorageFolder folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(parentPath);
-            foreach (Windows.Storage.StorageFolder child in await folder.GetFoldersAsync())
-            {
-                callbackFunction(new Models.File
-                {
-                    DisplayName = child.DisplayName,
-                    Description = string.IsNullOrEmpty(parentPath) ? child.Path : null,
-                    Path = child.Path,
-                    Icon = mdNote.Styles.Icons.Folder,
-                    FileKind = FileKindEnum.Folder
-                });
-                if (recursive)
-                {
-                    await ScanLocationAsync(child.Path, true, callbackFunction);
-                }
-            }
-
-            foreach (Windows.Storage.StorageFile child in await folder.CreateFileQueryWithOptions(getQuery()).GetFilesAsync())
-            {
-                callbackFunction(new Models.File
-                {
-                    DisplayName = child.Name,
-                    Path = child.Path,
-                    Icon = Styles.Icons.File,
-                    FileKind = FileKindEnum.Text
-                });
+                mdNote.Pages.MainPage.Editor.SavedContent = await Windows.Storage.FileIO.ReadTextAsync(file);
+                mdNote.Pages.MainPage.Editor.CurrentPath = file.Path;
+                CurrentFile = file;
             }
         }
 
-        public async Task WriteFileAsync(string fileName, string content)
+        public async void SaveFile()
         {
-            var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(System.IO.Path.GetDirectoryName(fileName));
-            var file = await folder.CreateFileAsync(System.IO.Path.GetFileName(fileName), Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(file, content, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+            if (CurrentFile==null)
+                SaveFileAs();
+            else
+            {
+                string newContent = await mdNote.Pages.MainPage.Editor.GetCurrentContentAsync();
+                await Windows.Storage.FileIO.WriteTextAsync(CurrentFile, newContent, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+                mdNote.Pages.MainPage.Editor.SaveContent(newContent);
+            }
         }
 
-        private Windows.Storage.Search.QueryOptions getQuery()
+        public async void SaveFileAs()
         {
-            List<string> fileTypeFilter = new List<string>();
-            /*            fileTypeFilter.Add(".md");
-                        fileTypeFilter.Add(".txt");*/
-            fileTypeFilter.Add("*");
-            //TODO разобраться с ограничениями файловых типов
-            return new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.DefaultQuery, fileTypeFilter);
+            Windows.Storage.Pickers.FileSavePicker picker = new Windows.Storage.Pickers.FileSavePicker();
+
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            picker.FileTypeChoices.Add("Markdown", new List<string>() { ".md" });
+            picker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt" });
+            Windows.Storage.StorageFile file = await picker.PickSaveFileAsync();
+            if (file == null) return;
+
+            mdNote.Pages.MainPage.Editor.CurrentPath = file.Path;
+            string newContent = await mdNote.Pages.MainPage.Editor.GetCurrentContentAsync();
+            await Windows.Storage.FileIO.WriteTextAsync(file, newContent, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+            mdNote.Pages.MainPage.Editor.SaveContent(newContent);
+            CurrentFile = file;
         }
 
+        public async void SaveEditor()
+        {
+            Windows.Storage.Pickers.FileSavePicker picker = new Windows.Storage.Pickers.FileSavePicker();
+
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            picker.FileTypeChoices.Add("html", new List<string>() { ".html" });
+            Windows.Storage.StorageFile file = await picker.PickSaveFileAsync();
+            if (file == null) return;
+
+            string newContent = mdNote.Pages.MainPage.Editor.generateHtml();
+            await Windows.Storage.FileIO.WriteTextAsync(file, newContent, Windows.Storage.Streams.UnicodeEncoding.Utf8);
+        }
+
+        public void NewFile()
+        {
+            CurrentFile = null;
+            mdNote.Pages.MainPage.Editor.CurrentPath = System.String.Empty;
+            mdNote.Pages.MainPage.Editor.SavedContent = System.String.Empty;
+        }
     }
 }

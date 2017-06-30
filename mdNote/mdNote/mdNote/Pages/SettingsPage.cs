@@ -14,7 +14,7 @@ namespace mdNote.Pages
             return new Switch
             {
                 IsToggled = value,
-                Margin = new Thickness(0, Styles.Styles.ControlsSpacing)
+                Margin = new Thickness(0, Styles.Controls.ControlsSpacing)
             };
         }
 
@@ -23,7 +23,7 @@ namespace mdNote.Pages
             var result = new Switch
             {
                 IsToggled = Settings.GetValue(key, defValue),
-                Margin = new Thickness(0, Styles.Styles.ControlsSpacing),
+                Margin = new Thickness(0, Styles.Controls.ControlsSpacing),
             };
             result.Toggled += (s, e) => { Settings.SetValue(key, result.IsToggled); };
             return result;
@@ -37,7 +37,7 @@ namespace mdNote.Pages
             {
                 Content = new StackLayout
                 {
-                    Padding = Styles.Styles.ControlsPadding,
+                    Padding = Styles.Controls.ControlsPadding,
                     Children = {
                         new Label { Text = "Automatic switch to preview mode" },
                         initSwitch("AutoPreview", false),

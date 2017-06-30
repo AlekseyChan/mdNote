@@ -7,24 +7,99 @@ using System.Threading.Tasks;
 namespace mdNote.Droid
 {
     [Activity(Label = "mdNote.Android", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "*/*")]
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "text/plain")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        public const int REQUEST_CODE_OPEN_DIRECTORY = 1;
-        public async Task SelectFolderAsync()
+        public const int REQUEST_CODE_OPEN_FILE = 2;
+        public const int REQUEST_CODE_SAVE_FILE = 3;
+        public const int REQUEST_CODE_CREATE_FILE = 4;
+
+        public Android.Net.Uri CurrentUri { get; set; } = null;
+
+        public void NewFile()
         {
-            var intent = new Intent(Intent.ActionOpenDocumentTree);
-            StartActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
+            CurrentUri = null;
+            mdNote.Pages.MainPage.Editor.CurrentPath = System.String.Empty;
+            mdNote.Pages.MainPage.Editor.SavedContent = System.String.Empty;
         }
 
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        private void PrepareIntent(Intent intent)
+        {
+            intent.AddCategory(Intent.CategoryOpenable);
+            intent.SetType("*/*");
+        }
+
+        public void OpenFile()
+        {
+            var intent = new Intent(Intent.ActionOpenDocument);
+            PrepareIntent(intent);
+            StartActivityForResult(intent, REQUEST_CODE_OPEN_FILE);
+        }
+
+        public async void SaveFile()
+        {
+            if (CurrentUri == null)
+                SaveFileAs();
+            else
+            {
+                string newContent = await mdNote.Pages.MainPage.Editor.GetCurrentContentAsync();
+                WriteFileContent(newContent);
+                mdNote.Pages.MainPage.Editor.SaveContent(newContent);
+            }
+        }
+
+        public void SaveFileAs()
+        {
+            var intent = new Intent(Intent.ActionCreateDocument);
+            PrepareIntent(intent);
+            intent.PutExtra(Intent.ExtraTitle, mdNote.Pages.MainPage.Editor.Title);
+            StartActivityForResult(intent, REQUEST_CODE_SAVE_FILE);
+        }
+
+        private string ReadFileContent()
+        {
+            System.IO.Stream stream = ContentResolver.OpenInputStream(CurrentUri);
+            System.IO.StreamReader reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            string textLine;
+            while ((textLine = reader.ReadLine()) != null)
+            {
+                builder.AppendLine(textLine);
+            }
+            reader.Close();
+            stream.Close();
+            return builder.ToString();
+        }
+
+        private void WriteFileContent(string content)
+        {
+            System.IO.Stream stream = ContentResolver.OpenOutputStream(CurrentUri);
+            System.IO.StreamWriter writer = new System.IO.StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write(content);
+            writer.Close();
+            stream.Close();
+        }
+
+        protected override async void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (requestCode == REQUEST_CODE_OPEN_DIRECTORY && resultCode == Result.Ok)
-            {
-                var folder = System.Net.WebUtility.UrlDecode(data.DataString);
+            if (resultCode != Result.Ok) return;
 
-                mdNote.Services.DeviceServices.LocationAdded(folder);
+            switch (requestCode)
+            {
+                case REQUEST_CODE_OPEN_FILE:
+                    CurrentUri = data.Data;
+                    mdNote.Pages.MainPage.Editor.CurrentPath = CurrentUri.Path;
+                    mdNote.Pages.MainPage.Editor.SavedContent = ReadFileContent();
+                    break;
+                case REQUEST_CODE_SAVE_FILE:
+                    CurrentUri = data.Data;
+                    mdNote.Pages.MainPage.Editor.CurrentPath = CurrentUri.Path;
+                    string newContent = await mdNote.Pages.MainPage.Editor.GetCurrentContentAsync();
+                    WriteFileContent(newContent);
+                    mdNote.Pages.MainPage.Editor.SaveContent(newContent);
+                    break;
             }
         }
 
@@ -39,20 +114,12 @@ namespace mdNote.Droid
 
             if (Intent.Action.Equals(Android.Content.Intent.ActionSend))
             {
+                /*                CurrentUri = Intent.ClipData.GetItemAt(0).Uri;
+                                mdNote.Pages.EditorPage.DefaultContent = ReadFileContent();*/
+
                 mdNote.Pages.EditorPage.DefaultContent = Intent.GetStringExtra(Android.Content.Intent.ExtraText);
             }
             LoadApplication(new App());
         }
-
-        private void TestWrite()
-        {
-            var sdCard = "/storage/0123-4567/Downloads";
-            var filePath = System.IO.Path.Combine(sdCard, "test.txt");
-            using (System.IO.StreamWriter writer = System.IO.File.CreateText(filePath))
-            {
-                writer.Write("test");
-            }
-        }
-
     }
 }
