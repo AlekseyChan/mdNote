@@ -10,24 +10,19 @@ namespace mdNote.Controls
     public class MenuView : ContentView
     {
         public event EventHandler OnMenuTap;
-        #region layout
-        private StackLayout fixedHeader;
-        private StackLayout fixedFooter;
-
         protected ListView menuView;
-        #endregion
 
         #region menu editor
         public List<IconMenuItem> MenuItems { get; private set; }
 
-        public void AddViewToFixedHeader(View view)
+        public void SetHeader(View view)
         {
-            fixedHeader.Children.Add(view);
+            menuView.Header = view;
         }
 
-        public void AddViewToFixedFooter(View view)
+        public void SetFooter(View view)
         {
-            fixedFooter.Children.Add(view);
+            menuView.Footer = view;
         }
 
         public void Refresh()
@@ -102,26 +97,7 @@ namespace mdNote.Controls
             };
             menuView.ItemTapped += MenuView_ItemTapped;
 
-            fixedHeader = new StackLayout
-            {
-                Orientation = StackOrientation.Vertical,
-                Padding = new Thickness(0, Device.OnPlatform(40, 20, 0), 0, 0)
-            };
-            fixedFooter = new StackLayout { Orientation = StackOrientation.Vertical };
-
-            Grid rootLayout = new Grid
-            {
-                RowDefinitions = {
-                    new RowDefinition{ Height = GridLength.Auto },
-                    new RowDefinition { },
-                    new RowDefinition{ Height = GridLength.Auto}
-                }
-            };
-            rootLayout.Children.Add(fixedHeader, 0, 0);
-            rootLayout.Children.Add(menuView, 0, 1);
-            rootLayout.Children.Add(fixedFooter, 0, 2);
-
-            Content = rootLayout;
+            Content = menuView;
         }
 
         private void MenuView_ItemTapped(object sender, ItemTappedEventArgs e)

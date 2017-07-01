@@ -33,16 +33,20 @@ namespace mdNote.Pages
         {
             Title = "Settings";
 
+            var ControlsStack = new StackLayout
+            {
+                Padding = Styles.Controls.ControlsPadding,
+            };
+            ControlsStack.Children.Add(new Label { Text = "Automatic switch to preview mode" });
+            ControlsStack.Children.Add(initSwitch("AutoPreview", false));
+            if (Device.RuntimePlatform.Equals(Device.Android))
+            {
+                ControlsStack.Children.Add(new Label { Text = "Use text/markdown MIME type" });
+                ControlsStack.Children.Add(initSwitch("UseMime", false));
+            }
             Content = new ScrollView
             {
-                Content = new StackLayout
-                {
-                    Padding = Styles.Controls.ControlsPadding,
-                    Children = {
-                        new Label { Text = "Automatic switch to preview mode" },
-                        initSwitch("AutoPreview", false),
-                    }
-                }
+                Content = ControlsStack
             };
         }
     }

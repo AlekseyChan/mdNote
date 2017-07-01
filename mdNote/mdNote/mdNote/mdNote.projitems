@@ -18,6 +18,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\AppTitleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MenuView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\DeviceServices.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />

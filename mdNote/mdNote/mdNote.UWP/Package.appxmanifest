@@ -16,21 +16,12 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="mdNote.UWP.App">
       <uap:VisualElements DisplayName="mdNote.UWP" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="mdNote.UWP" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#004f88" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="text">
-            <uap:DisplayName>mdNote</uap:DisplayName>
-            <uap:EditFlags OpenIsSafe="true" />
-            <uap:SupportedFileTypes>
-              <uap:FileType>.txt</uap:FileType>
-              <uap:FileType>.md</uap:FileType>
-            </uap:SupportedFileTypes>
-          </uap:FileTypeAssociation>
-        </uap:Extension>
         <uap:Extension Category="windows.shareTarget">
           <uap:ShareTarget>
             <uap:SupportedFileTypes>
@@ -40,6 +31,15 @@
             <uap:DataFormat>Html</uap:DataFormat>
             <uap:DataFormat>WebLink</uap:DataFormat>
           </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="text">
+            <uap:DisplayName>mdNote</uap:DisplayName>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.txt</uap:FileType>
+              <uap:FileType>.md</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
     </Application>

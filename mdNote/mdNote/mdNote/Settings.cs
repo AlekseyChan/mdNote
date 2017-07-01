@@ -39,5 +39,11 @@ namespace mdNote
             get => GetValue("AutoPreview", false);
             set => SetValue("AutoPreview", value);
         }
+
+        public static bool UseMime
+        {
+            get => GetValue("UseMime", false);
+            set => SetValue("UseMime", value);
+        }
     }
 }

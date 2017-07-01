@@ -2197,14 +2197,17 @@ namespace mdNote.Droid
 			// aapt resource value: 0x7f02009f
 			public const int mr_ic_play_light = 2130837663;
 			
-			// aapt resource value: 0x7f0200a2
-			public const int notification_template_icon_bg = 2130837666;
+			// aapt resource value: 0x7f0200a3
+			public const int notification_template_icon_bg = 2130837667;
 			
 			// aapt resource value: 0x7f0200a0
 			public const int profile_generic = 2130837664;
 			
 			// aapt resource value: 0x7f0200a1
 			public const int slideout = 2130837665;
+			
+			// aapt resource value: 0x7f0200a2
+			public const int splashscreen = 2130837666;
 			
 			static Drawable()
 			{
@@ -3082,8 +3085,8 @@ namespace mdNote.Droid
 			// aapt resource value: 0x7f0a015a
 			public const int Animation_Design_BottomSheetDialog = 2131362138;
 			
-			// aapt resource value: 0x7f0a0174
-			public const int AppCompatDialogStyle = 2131362164;
+			// aapt resource value: 0x7f0a0175
+			public const int AppCompatDialogStyle = 2131362165;
 			
 			// aapt resource value: 0x7f0a00a5
 			public const int Base_AlertDialog_AppCompat = 2131361957;
@@ -3526,11 +3529,11 @@ namespace mdNote.Droid
 			// aapt resource value: 0x7f0a001a
 			public const int CardView_Light = 2131361818;
 			
-			// aapt resource value: 0x7f0a0172
-			public const int MyTheme = 2131362162;
-			
 			// aapt resource value: 0x7f0a0173
-			public const int MyTheme_Base = 2131362163;
+			public const int MyTheme = 2131362163;
+			
+			// aapt resource value: 0x7f0a0174
+			public const int MyTheme_Base = 2131362164;
 			
 			// aapt resource value: 0x7f0a0032
 			public const int Platform_AppCompat = 2131361842;
@@ -4185,6 +4188,9 @@ namespace mdNote.Droid
 			
 			// aapt resource value: 0x7f0a0016
 			public const int Widget_MediaRouter_MediaRouteButton = 2131361814;
+			
+			// aapt resource value: 0x7f0a0172
+			public const int splashscreen = 2131362162;
 			
 			static Style()
 			{

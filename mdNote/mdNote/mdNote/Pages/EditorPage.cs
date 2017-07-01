@@ -205,7 +205,8 @@ namespace mdNote.Pages
 
         private async Task<bool> IsModifiedAsync()
         {
-            return SavedContent.Equals(await GetCurrentContentAsync());
+            string currentContent = await GetCurrentContentAsync();
+            return !SavedContent.Equals(currentContent);
         }
 
         public void SaveContent(string newContent)
@@ -218,19 +219,15 @@ namespace mdNote.Pages
         #region file operations
         public async Task<bool> CheckModificationsAsync()
         {
-            //TODO Здесь надо проеврять, быи ли изменения и предлагать их сохранять
-            //            if (await IsModifiedAsync())
-            //          {
-            //if (!(await DisplayAlert(Title, "You have unsaved changes. Continue?", "Yes", "No"))
-            //        }
-            return true;
-        }
+            if (await IsModifiedAsync())
+            {
+                if (await DisplayAlert("Unsaved changes", "Are you sure you want to continue? You will lose any unsaved changes", "Continue", "Cancel"))
+                    return true;
+                else
+                    return false;
+            }
 
-        public async void NewFileAsync()
-        {
-            if (!await CheckModificationsAsync()) return;
-            CurrentPath = String.Empty;
-            SavedContent = String.Empty;
+            return true;
         }
 
         public async Task SetTextAsync(string newText)
@@ -275,9 +272,10 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "New",
                 Icon = Styles.Icons.File,
-                Command = (o) =>
+                Command = async (o) =>
                 {
-                    DeviceServices.NewFile();
+                    if (await CheckModificationsAsync())
+                        DeviceServices.NewFile();
                 }
             };
 
@@ -286,9 +284,10 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "Open...",
                 Icon = Styles.Icons.OpenFile,
-                Command = (o) =>
+                Command = async (o) =>
                 {
-                    DeviceServices.OpenFile();
+                    if (await CheckModificationsAsync())
+                        DeviceServices.OpenFile();
                 }
             };
 
@@ -361,10 +360,14 @@ namespace mdNote.Pages
             webView.Focus();
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            return base.OnBackButtonPressed();
+        }
         protected override void OnDisappearing()
         {
-            base.OnDisappearing();
-            GC.Collect();
+                base.OnDisappearing();
+            //GC.Collect();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace mdNote.Droid
 {
-    [Activity(Label = "mdNote.Android", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "mdNote.Android", Theme = "@style/splashscreen", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "*/*")]
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "text/plain")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
@@ -27,7 +27,10 @@ namespace mdNote.Droid
         private void PrepareIntent(Intent intent)
         {
             intent.AddCategory(Intent.CategoryOpenable);
-            intent.SetType("*/*");
+            if (mdNote.Settings.UseMime)
+                intent.SetType("text/markdown");
+            else
+                intent.SetType("*/*");
         }
 
         public void OpenFile()
@@ -59,26 +62,45 @@ namespace mdNote.Droid
 
         private string ReadFileContent()
         {
-            System.IO.Stream stream = ContentResolver.OpenInputStream(CurrentUri);
-            System.IO.StreamReader reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            string textLine;
-            while ((textLine = reader.ReadLine()) != null)
+            System.IO.Stream stream = null;
+            System.IO.StreamReader reader = null;
+            try
             {
-                builder.AppendLine(textLine);
+                stream = ContentResolver.OpenInputStream(CurrentUri);
+                reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                string textLine;
+                while ((textLine = reader.ReadLine()) != null)
+                {
+                    builder.AppendLine(textLine);
+                }
+                reader.Close();
+                stream.Close();
+                return builder.ToString();
+            } finally
+            {
+                if (reader != null) reader.Dispose();
+                if (stream != null) stream.Dispose();
             }
-            reader.Close();
-            stream.Close();
-            return builder.ToString();
         }
 
         private void WriteFileContent(string content)
         {
-            System.IO.Stream stream = ContentResolver.OpenOutputStream(CurrentUri);
-            System.IO.StreamWriter writer = new System.IO.StreamWriter(stream, System.Text.Encoding.UTF8);
-            writer.Write(content);
-            writer.Close();
-            stream.Close();
+            System.IO.Stream stream = null;
+            System.IO.StreamWriter writer = null;
+            try
+            {
+                stream = ContentResolver.OpenOutputStream(CurrentUri);
+                writer = new System.IO.StreamWriter(stream, System.Text.Encoding.UTF8);
+                writer.Write(content);
+                writer.Close();
+                stream.Close();
+            }
+            finally
+            {
+                if (writer != null) writer.Dispose();
+                if (stream != null) stream.Dispose();
+            }
         }
 
         protected override async void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -105,6 +127,10 @@ namespace mdNote.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
+            // Name of the MainActivity theme you had there before.
+            // Or you can use global::Android.Resource.Style.ThemeHoloLight
+            base.SetTheme(Resource.Style.MyTheme);
+
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 

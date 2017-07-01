@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -33,6 +34,21 @@ namespace mdNote.UWP
             this.Suspending += OnSuspending;
         }
 
+        private void InitXamarin(IActivatedEventArgs e)
+        {
+            /*List<Assembly> assembliesToInclude = new List<Assembly>();
+
+            assembliesToInclude.Add(typeof(mdNote.UWP.BaseUrl).GetTypeInfo().Assembly);
+            assembliesToInclude.Add(typeof(mdNote.UWP.FileSystem).GetTypeInfo().Assembly);
+
+            Xamarin.Forms.Forms.Init(e, assembliesToInclude);*/
+
+            Xamarin.Forms.Forms.Init(e);
+
+            Xamarin.Forms.DependencyService.Register<mdNote.UWP.BaseUrl>();
+            Xamarin.Forms.DependencyService.Register<mdNote.UWP.FileSystem>();
+        }
+
         private async void OpenFile(Windows.Storage.StorageFile file)
         {
             mdNote.Pages.MainPage.Editor.SavedContent = await Windows.Storage.FileIO.ReadTextAsync(file, Windows.Storage.Streams.UnicodeEncoding.Utf8);
@@ -59,10 +75,7 @@ namespace mdNote.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                Xamarin.Forms.Forms.Init(e);
-
-                Xamarin.Forms.DependencyService.Register<BaseUrl>();
-                Xamarin.Forms.DependencyService.Register<FileSystem>();
+                InitXamarin(e);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -112,11 +125,7 @@ namespace mdNote.UWP
 
                 if (Pages.MainPage.Editor == null)
                 {
-
-                    Xamarin.Forms.Forms.Init(args);
-
-                    Xamarin.Forms.DependencyService.Register<BaseUrl>();
-                    Xamarin.Forms.DependencyService.Register<FileSystem>();
+                    InitXamarin(args);
 
                     var rootFrame = new Frame();
                     Pages.EditorPage.DefaultContent = Text;

@@ -9,6 +9,8 @@ namespace mdNote.Controls
 {
     public class AppTitleView : ContentView
     {
+        public event EventHandler OnTap;
+        private TapGestureRecognizer tapRecognizer;
         public AppTitleView()
         {
             BackgroundColor = Styles.AppTitle.BackgroundColor;
@@ -29,12 +31,22 @@ namespace mdNote.Controls
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Styles.AppTitle.TextColor
             };
+            
 
             Content = new Grid()
             {
                 Children = { shadow, mainTitle }
             };
 
+            tapRecognizer = new TapGestureRecognizer();
+            tapRecognizer.Tapped += TapRecognizer_Tapped;
+            GestureRecognizers.Add(tapRecognizer);            
+
+        }
+
+        private void TapRecognizer_Tapped(object sender, EventArgs e)
+        {
+            OnTap?.Invoke(this, e);
         }
     }
 

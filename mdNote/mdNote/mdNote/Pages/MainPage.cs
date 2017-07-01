@@ -14,13 +14,21 @@ namespace mdNote.Pages
         //TODO Check using as static
         public static NavigationPage Navigator;
         public SettingsPage Settings { get; set; } = null;
+        public AboutPage About { get; set; } = null;
+        public Controls.AppTitleView AboutCommand { get; set; }
 
         public MainPage()
         {
             Editor = new EditorPage();
 
             Menu = new Controls.MenuView();
-            Menu.AddViewToFixedHeader(new Controls.AppTitleView());
+            AboutCommand = new Controls.AppTitleView();
+            AboutCommand.OnTap += (s, e) => {
+                if (About == null) About = new AboutPage();
+                Detail.Navigation.PushAsync(About);
+            };
+            if (Device.RuntimePlatform.Equals(Device.Android))
+                Menu.SetHeader(AboutCommand);
             Menu.AddMenuItem(Editor.NewCommand);
             Menu.AddMenuItem(Editor.OpenCommand);
             Menu.AddMenuItem(Editor.SaveCommand);
@@ -33,6 +41,11 @@ namespace mdNote.Pages
                 if (Settings == null) Settings = new SettingsPage();
                 Detail.Navigation.PushAsync(Settings);
             }, null);
+            if (!Device.RuntimePlatform.Equals(Device.Android))
+            {
+                Menu.SetFooter(AboutCommand);
+            }
+
             Menu.OnMenuTap += (s, e) => { IsPresented = false; };
 
             Master = new ContentPage { Title = "mdNote", Content = Menu };
@@ -42,5 +55,6 @@ namespace mdNote.Pages
             Detail = Navigator;
             MasterBehavior = MasterBehavior.Popover;
         }
+
     }
 }
