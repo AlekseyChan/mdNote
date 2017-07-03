@@ -75,7 +75,7 @@ namespace mdNote.UWP
         {
             CurrentFile = null;
             mdNote.Pages.MainPage.Editor.CurrentPath = System.String.Empty;
-            mdNote.Pages.MainPage.Editor.SavedContent = System.String.Empty;
+            mdNote.Pages.MainPage.Editor.RefreshSavedContent(System.String.Empty);
         }
     }
 }

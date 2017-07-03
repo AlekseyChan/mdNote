@@ -15,6 +15,7 @@ namespace mdNote.Pages
         public static NavigationPage Navigator;
         public SettingsPage Settings { get; set; } = null;
         public AboutPage About { get; set; } = null;
+        public HelpPage HelpPage { get; set; } = null;
         public Controls.AppTitleView AboutCommand { get; set; }
 
         public MainPage()
@@ -23,7 +24,8 @@ namespace mdNote.Pages
 
             Menu = new Controls.MenuView();
             AboutCommand = new Controls.AppTitleView();
-            AboutCommand.OnTap += (s, e) => {
+            AboutCommand.OnTap += (s, e) =>
+            {
                 if (About == null) About = new AboutPage();
                 Detail.Navigation.PushAsync(About);
             };
@@ -41,10 +43,22 @@ namespace mdNote.Pages
                 if (Settings == null) Settings = new SettingsPage();
                 Detail.Navigation.PushAsync(Settings);
             }, null);
-            if (!Device.RuntimePlatform.Equals(Device.Android))
+            Menu.AddSeparator();
+            Menu.AddMenuItem("Markdown help", null, Icons.Help, (o) =>
             {
-                Menu.SetFooter(AboutCommand);
-            }
+                if (HelpPage == null) HelpPage = new HelpPage();
+                Detail.Navigation.PushAsync(HelpPage);
+            }, null);
+            Menu.AddMenuItem("About...", null, Icons.Info, (o) =>
+            {
+                if (About == null) About = new AboutPage();
+                Detail.Navigation.PushAsync(About);
+            }, null);
+            Menu.AddSeparator();
+            Menu.AddMenuItem("Exit", null, Icons.Exit, (o) =>
+            {
+                Services.DeviceServices.TryExit();
+            }, null);
 
             Menu.OnMenuTap += (s, e) => { IsPresented = false; };
 

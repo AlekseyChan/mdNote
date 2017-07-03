@@ -26,7 +26,15 @@ namespace mdNote.Services
         {
             FileSystem.SaveFileAs();
         }
+        
+        public static async void TryExit()
+        {
+            if (await mdNote.Pages.MainPage.Editor.CheckModificationsAsync())
+                ExitService.Exit();
 
+        }
+
+        public static IExitService ExitService = DependencyService.Get<IExitService>();
         public static IFileSystem FileSystem = DependencyService.Get<IFileSystem>();
         public static string BaseUrl = DependencyService.Get<IBaseUrl>().Get();
     }

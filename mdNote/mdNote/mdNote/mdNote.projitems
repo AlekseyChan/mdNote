@@ -19,8 +19,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\AppTitleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MenuView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AboutPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\HelpPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\DeviceServices.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IExitService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Styles\AppTitle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Styles\Controls.cs" />
@@ -38,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Helpers\" />
     <Folder Include="$(MSBuildThisFileDirectory)UI\" />
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
   </ItemGroup>

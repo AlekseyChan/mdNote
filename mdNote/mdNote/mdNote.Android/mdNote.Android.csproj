@@ -43,8 +43,8 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <AotAssemblies>true</AotAssemblies>
-    <EnableLLVM>true</EnableLLVM>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis />
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="AdvWebViewRenderer.cs" />
     <Compile Include="BaseUrl.cs" />
+    <Compile Include="ExitService.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />

@@ -46,6 +46,7 @@ namespace mdNote.UWP
             Xamarin.Forms.Forms.Init(e);
 
             Xamarin.Forms.DependencyService.Register<mdNote.UWP.BaseUrl>();
+            Xamarin.Forms.DependencyService.Register<mdNote.UWP.ExitService>();
             Xamarin.Forms.DependencyService.Register<mdNote.UWP.FileSystem>();
         }
 
@@ -94,7 +95,9 @@ namespace mdNote.UWP
                 rootFrame.Navigate(typeof(MainPage), e);
             }
             // Ensure the current window is active
+            
             Window.Current.Activate();
+            
         }
 
         /// <summary>

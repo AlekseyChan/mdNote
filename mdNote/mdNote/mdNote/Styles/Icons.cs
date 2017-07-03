@@ -78,5 +78,10 @@ namespace mdNote.Styles
             get { return Device.OnPlatform(null, "\uF096", "\uE295"); }
         }
         public static string Edit { get { return Device.OnPlatform(null, "\uF044", "\uE104"); } }
+
+        public static string Help { get => Device.OnPlatform(null, "\uF128", "\uE11B"); }
+
+        public static string Info { get => Device.OnPlatform(null, "\uF129", "\uE946"); }
+        public static string Exit { get => Device.OnPlatform(null, "\uF08B", "\uEF2C"); }
     }
 }

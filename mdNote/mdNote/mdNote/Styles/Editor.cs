@@ -6,15 +6,18 @@ namespace mdNote.Styles
 {
     public class Editor
     {
-        public static string FontSize = "12pt";
-        public static string FontFamily = "Helvetica,Tahoma,Arial,sans-serif";
-        public static string H1Size = "16pt";
-        public static string H2Size = "14pt";
-        public static string H3Size = "12pt";
-        public static string H4Size = "10pt";
-        public static string H5Size = "8pt";
+        public static string FontSize = Settings.FontSize;
+        public static string FontFamily = Settings.FontFamily;
+        public static string H1Size = "2.4em";
+        public static string H2Size = "2em";
+        public static string H3Size = "1.6em";
+        public static string H4Size = "1.2em";
+        public static string H5Size = "1em";
 
-        public static string TextColor = "white";
-        public static string BackgroundColor = "#808080";
+        public static string TextColor = Settings.TextColor;
+        public static string BackgroundColor = Settings.BackgroundColor;
+
+        public static string ViewTextColor = Settings.ViewTextColor;
+        public static string ViewBackgroundColor = Settings.ViewBackgroundColor;
     }
 }

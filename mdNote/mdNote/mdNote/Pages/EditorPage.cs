@@ -28,12 +28,13 @@ namespace mdNote.Pages
             Device.OpenUri(new Uri(e.Url));
         }
 
-        private void RefreshWebView()
+        public void RefreshWebView()
         {
             htmlSource.BaseUrl = DeviceServices.BaseUrl;
             htmlSource.Html = generateHtml();
             Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
             {
+                webView.Source = null;
                 webView.Focus();
                 webView.Source = htmlSource;
             });
@@ -50,8 +51,8 @@ namespace mdNote.Pages
         font-family: " + Styles.Editor.FontFamily + @";
         padding: 0;
         margin: 0;
-        background-color: " + Styles.Editor.TextColor + @";
-        color: " + Styles.Editor.BackgroundColor + @";
+        background: " + Styles.Editor.BackgroundColor + @";
+        color: " + Styles.Editor.TextColor + @";
     }
 
     textarea {
@@ -59,6 +60,19 @@ namespace mdNote.Pages
         border: 0;
         width: 100%;
         height: 100%;
+        background: " + Styles.Editor.BackgroundColor + @";
+        color: " + Styles.Editor.TextColor + @";
+    }
+
+    .CodeMirror {
+        background: " + Styles.Editor.BackgroundColor + @";
+        color: " + Styles.Editor.TextColor + @";
+        border: 0;
+    }
+
+    .editor-preview,.editor-preview-side{
+        background: " + Styles.Editor.ViewBackgroundColor + @";
+        color: " + Styles.Editor.ViewTextColor + @";
     }
 
     h1 {
@@ -67,6 +81,7 @@ namespace mdNote.Pages
     }
     .CodeMirror .CodeMirror-code .cm-header-1 {
         font-size: " + Styles.Editor.H1Size + @";
+        line-height: " + Styles.Editor.H1Size + @";
     }
     h2 {
         font-size: " + Styles.Editor.H2Size + @";
@@ -74,6 +89,7 @@ namespace mdNote.Pages
     }
     .CodeMirror .CodeMirror-code .cm-header-2 {
         font-size: " + Styles.Editor.H2Size + @";
+        line-height: " + Styles.Editor.H2Size + @";
     }
     h3 {
         font-size: " + Styles.Editor.H3Size + @";
@@ -81,6 +97,7 @@ namespace mdNote.Pages
     }
     .CodeMirror .CodeMirror-code .cm-header-3 {
         font-size: " + Styles.Editor.H3Size + @";
+        line-height: " + Styles.Editor.H3Size + @";
     }
     h4 {
         font-size: " + Styles.Editor.H4Size + @";
@@ -88,6 +105,7 @@ namespace mdNote.Pages
     }
     .CodeMirror .CodeMirror-code .cm-header-4 {
         font-size: " + Styles.Editor.H4Size + @";
+        line-height: " + Styles.Editor.H4Size + @";
     }
     h5 {
         font-size: " + Styles.Editor.H5Size + @";
@@ -95,6 +113,7 @@ namespace mdNote.Pages
     }
     .CodeMirror .CodeMirror-code .cm-header-5 {
         font-size: " + Styles.Editor.H5Size + @";
+        line-height: " + Styles.Editor.H5Size + @";
     }
 </style>";
         }
@@ -102,6 +121,7 @@ namespace mdNote.Pages
         private string generateOptions()
         {
             return @"
+            forceSync: true,
             autoDownloadFontAwesome: false,
             autofocus: false,
             element: document.getElementById('editor'),
@@ -179,6 +199,11 @@ namespace mdNote.Pages
                 savedContent = value;
                 RefreshWebView();
             }
+        }
+
+        public void RefreshSavedContent(string newValue) {
+            savedContent = newValue;
+            RefreshWebView();
         }
 
         public string ConvertedContent
@@ -362,7 +387,9 @@ namespace mdNote.Pages
 
         protected override bool OnBackButtonPressed()
         {
-            return base.OnBackButtonPressed();
+            if (Navigation.NavigationStack.Count() > 1) return base.OnBackButtonPressed();
+            DeviceServices.TryExit();
+            return false;
         }
         protected override void OnDisappearing()
         {

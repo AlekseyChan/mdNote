@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace mdNote.Droid
 {
     [Activity(Label = "mdNote.Android", Theme = "@style/splashscreen", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "*/*")]
     [IntentFilter(new[] { Android.Content.Intent.ActionSend }, Categories = new[] { Android.Content.Intent.CategoryDefault }, DataMimeType = "text/plain")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -21,7 +20,8 @@ namespace mdNote.Droid
         {
             CurrentUri = null;
             mdNote.Pages.MainPage.Editor.CurrentPath = System.String.Empty;
-            mdNote.Pages.MainPage.Editor.SavedContent = System.String.Empty;
+            mdNote.Pages.MainPage.Editor.RefreshSavedContent(System.String.Empty);
+            
         }
 
         private void PrepareIntent(Intent intent)
