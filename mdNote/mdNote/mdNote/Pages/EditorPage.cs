@@ -55,6 +55,11 @@ namespace mdNote.Pages
         color: " + Styles.Editor.TextColor + @";
     }
 
+    td {
+        font-size: " + Styles.Editor.FontSize + @";
+        font-family: " + Styles.Editor.FontFamily + @";
+    }
+
     textarea {
         padding: 0;
         border: 0;
