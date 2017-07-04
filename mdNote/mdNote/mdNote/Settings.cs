@@ -73,7 +73,7 @@ namespace mdNote
 
         public static string BackgroundColor
         {
-            get => GetValue("BackgroundColor", "#c0c0c0");
+            get => GetValue("BackgroundColor", "#eeeeee");
             set => SetValue("BackgroundColor", value);
         }
 
@@ -85,7 +85,7 @@ namespace mdNote
 
         public static string ViewBackgroundColor
         {
-            get => GetValue("ViewBackgroundColor", "#fff6cc");
+            get => GetValue("ViewBackgroundColor", "#fffada");
             set => SetValue("ViewBackgroundColor", value);
         }
     }

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="dde1a3b5-db4d-4463-aa1a-5be62fc1e4db" Publisher="CN=aleks" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="dde1a3b5-db4d-4463-aa1a-5be62fc1e4db" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="33148AlekseyChan.mdNote.UWP" Publisher="CN=9BB017BD-D85F-47DF-B490-6B3DEB7CA4B2" Version="1.0.0.0" />
+  <mp:PhoneIdentity PhoneProductId="68f23e46-81c0-498c-af7c-ba60c602ff0b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>mdNote.UWP</DisplayName>
-    <PublisherDisplayName>aleks</PublisherDisplayName>
+    <PublisherDisplayName>Aleksey Chan</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -15,22 +15,13 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="mdNote.UWP.App">
-      <uap:VisualElements DisplayName="mdNote" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="mdNote application" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="mdNote" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="WYSIWYG markdown editor" BackgroundColor="transparent">
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#004f88" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="text">
-            <uap:DisplayName>mdNote</uap:DisplayName>
-            <uap:SupportedFileTypes>
-              <uap:FileType>.txt</uap:FileType>
-              <uap:FileType>.md</uap:FileType>
-            </uap:SupportedFileTypes>
-          </uap:FileTypeAssociation>
-        </uap:Extension>
         <uap:Extension Category="windows.shareTarget">
           <uap:ShareTarget>
             <uap:SupportedFileTypes>
@@ -40,6 +31,15 @@
             <uap:DataFormat>Html</uap:DataFormat>
             <uap:DataFormat>WebLink</uap:DataFormat>
           </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="text">
+            <uap:DisplayName>mdNote</uap:DisplayName>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.txt</uap:FileType>
+              <uap:FileType>.md</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
     </Application>
