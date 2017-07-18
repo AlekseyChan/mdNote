@@ -6,7 +6,7 @@ mdNote is WYSIWYG markdown editor for Android(4+) and Windows 10.
 
 1. Fast, simple and clean WYSIWYG markdown editor
 2. View/edit mode
-3. Ajustable fonts and colors
+3. Adjustable fonts and colors
 4. Supporting "Send to" operation system action
 5. One application for both Windows and Android platforms
 
