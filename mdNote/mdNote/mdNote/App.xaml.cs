@@ -1,11 +1,7 @@
 ﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using mdNote.Controls;
-using mdNote.Pages;
-using System;
-using System.Threading.Tasks;
 
-[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
+//[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mdNote
 {
 	public partial class App : Application

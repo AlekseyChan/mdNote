@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace mdNote
+﻿namespace mdNote
 {
-    class Settings
+    public class Settings
     {
         public static string LibraryFolders
         {

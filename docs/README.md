@@ -24,7 +24,7 @@ mdNote is WYSIWYG markdown editor for Android(4+) and Windows 10.
 ![Edit mode](android/editmode.png)
 ![View mode](android/viewmode.png)
 
-## Privacy policy
+(##Privacy-policy)
 
 mdNote use your local files for viewing and editing purposes and don't collect and send them anywhere.
 

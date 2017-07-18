@@ -1,9 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Xamarin.Forms;
 using mdNote.Styles;
 
 namespace mdNote.Controls
@@ -116,7 +111,7 @@ namespace mdNote.Controls
         protected Label detailLabel;
         protected Grid gridLayout;
 
-        protected virtual void updateControls()
+        protected void updateControls()
         {
             iconLabel.FontSize = fontSize * Icons.ZoomFactor;
             textLabel.FontSize = fontSize;

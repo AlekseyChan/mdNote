@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using mdNote.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.UWP;
@@ -12,7 +8,7 @@ namespace mdNote.UWP
 {
     public class AdvWebViewRender:WebViewRenderer
     {
-        protected async override void OnElementChanged(ElementChangedEventArgs<WebView> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<WebView> e)
         {
             base.OnElementChanged(e);
             var webView = e.NewElement as AdvWebView;

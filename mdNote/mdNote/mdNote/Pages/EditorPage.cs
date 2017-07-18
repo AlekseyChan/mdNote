@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using mdNote.Models;
 using mdNote.Services;
@@ -345,13 +344,13 @@ namespace mdNote.Pages
                 Kind = IconMenuItemKind.Command,
                 Text = "View mode",
                 Icon = Styles.Icons.Preview,
-                Command = (o) =>
+                Command = async (o) =>
                 {
                     IsPreview = !IsPreview;
                     if (isPreview)
-                        webView.TryEval("if (!simplemde.isPreviewActive()) simplemde.togglePreview();");
+                        await webView.TryEval("if (!simplemde.isPreviewActive()) simplemde.togglePreview();");
                     else
-                        webView.TryEval("if (simplemde.isPreviewActive()) simplemde.togglePreview();");
+                        await webView.TryEval("if (simplemde.isPreviewActive()) simplemde.togglePreview();");
                     SyncPreviewMenu();
                 }
             };
@@ -399,7 +398,6 @@ namespace mdNote.Pages
         protected override void OnDisappearing()
         {
                 base.OnDisappearing();
-            //GC.Collect();
         }
     }
 }

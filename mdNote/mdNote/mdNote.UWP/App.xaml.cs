@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Collections.Generic;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace mdNote.UWP
@@ -36,14 +27,19 @@ namespace mdNote.UWP
 
         private void InitXamarin(IActivatedEventArgs e)
         {
-            /*List<Assembly> assembliesToInclude = new List<Assembly>();
+            //Xamarin.Forms.Forms.Init(e);
 
+            List<Assembly> assembliesToInclude = new System.Collections.Generic.List<System.Reflection.Assembly>();
+
+            assembliesToInclude.Add(typeof(Xamarin.Forms.WebView).GetTypeInfo().Assembly);
+            assembliesToInclude.Add(typeof(mdNote.Controls.AdvWebView).GetTypeInfo().Assembly);
             assembliesToInclude.Add(typeof(mdNote.UWP.BaseUrl).GetTypeInfo().Assembly);
+            assembliesToInclude.Add(typeof(mdNote.UWP.ExitService).GetTypeInfo().Assembly);
             assembliesToInclude.Add(typeof(mdNote.UWP.FileSystem).GetTypeInfo().Assembly);
+            assembliesToInclude.Add(typeof(mdNote.UWP.AdvWebViewRender).GetTypeInfo().Assembly);
+            assembliesToInclude.Add(typeof(Xamarin.Forms.DependencyService).GetTypeInfo().Assembly);
 
-            Xamarin.Forms.Forms.Init(e, assembliesToInclude);*/
-
-            Xamarin.Forms.Forms.Init(e);
+            Xamarin.Forms.Forms.Init(e, assembliesToInclude);
 
             Xamarin.Forms.DependencyService.Register<mdNote.UWP.BaseUrl>();
             Xamarin.Forms.DependencyService.Register<mdNote.UWP.ExitService>();
@@ -105,7 +101,7 @@ namespace mdNote.UWP
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             ActivationSequence(e);
             if (!String.IsNullOrEmpty(e.Arguments))
@@ -138,9 +134,9 @@ namespace mdNote.UWP
                 }
                 else
                 {
-                    Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
+                    Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
                     {
-                        Pages.MainPage.Editor.SetTextAsync(Text);
+                        await Pages.MainPage.Editor.SetTextAsync(Text);
                     });
                     args.ShareOperation.ReportCompleted();
                 }
